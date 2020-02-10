@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#333</color>
+    <color name="colorPrimaryDark">#F8F4ED</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="light_outline">#d1c7b8</color>
+    <color name="light_word">#605d59</color>
+    <color name="light_select">#333333</color>
+
+</resources>
