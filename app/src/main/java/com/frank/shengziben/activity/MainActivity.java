@@ -5,11 +5,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.room.Room;
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -21,8 +22,8 @@ import com.frank.shengziben.data.ChineseWordDao;
 import com.frank.shengziben.data.ChineseWordDatabase;
 import com.frank.shengziben.databinding.ActivityMainBinding;
 import com.rnkrsoft.bopomofo4j.Bopomofo4j;
-import java.util.Collections;
-import java.util.List;
+
+import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
     private ChineseWord         checkWord;
@@ -37,12 +38,17 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Tools.setAndroidNativeLightStatusBar(this);
+        }
+
         activity = this;
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
 
         // 数据
         database = Room.databaseBuilder(this,ChineseWordDatabase.class,"chineseword_database")
-                .allowMainThreadQueries().build();
+                .allowMainThreadQueries()
+                .build();
         dao = database.getChineseWordDao();
 
         // Adapter
@@ -59,7 +65,15 @@ public class MainActivity extends Activity {
         });
 
         // RecyclerView
-        binding.recyclerView.setLayoutManager(new GridLayoutManager(this,4));
+        Configuration mConfiguration = this.getResources().getConfiguration(); //获取设置的配置信息
+        int ori = mConfiguration.orientation;
+        if (ori == Configuration.ORIENTATION_LANDSCAPE) {
+            //横屏
+            binding.recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),6));
+        } else if (ori == Configuration.ORIENTATION_PORTRAIT) {
+            //竖屏
+            binding.recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),4));
+        }
         binding.recyclerView.setItemAnimator(new DefaultItemAnimator());
         binding.recyclerView.setAdapter(adapter);
 
@@ -124,8 +138,9 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 String word = binding.editText.getText().toString();
-                if (word.equals("")){
-                    Toast.makeText(v.getContext(),"请输入生字！",Toast.LENGTH_SHORT).show();
+                String pattern = "[\\u4E00-\\u9FA5]+";
+                if (!Pattern.matches(pattern,word)){
+                    Toast.makeText(v.getContext(),"请输入一个中文生字！",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 //汉语句子->声母音调拼音

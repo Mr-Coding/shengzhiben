@@ -1,18 +1,15 @@
 package com.frank.shengziben;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.frank.shengziben.data.ChineseWord;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,14 +19,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder1> {
     private int mainPosition;
     private OnLongClickListener listener;
 
-    public interface OnLongClickListener{
-        void onLongClick(ChineseWord word);
-    }
-
-    public void setOnLongClickListener(OnLongClickListener listener){
-        this.listener = listener;
-    }
-
     public MyAdapter(List<ChineseWord> words) {
         Collections.sort(words);
         this.words = words;
@@ -38,7 +27,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder1> {
     @NonNull
     @Override
     public MyViewHolder1 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item2,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item,parent,false);
         return new MyViewHolder1(view);
     }
 
@@ -63,6 +52,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder1> {
         return super.getItemViewType(position);
     }
 
+    @Override
+    public int getItemCount() {
+        return words.size();
+    }
+
+    public void setWords(List<ChineseWord> words) {
+        this.words = words;
+    }
+
     // 添加数据
     public void add(ChineseWord word){
         words.add(0,word);
@@ -77,9 +75,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder1> {
         notifyDataSetChanged();
     }
 
-    @Override
-    public int getItemCount() {
-        return words.size();
+    public interface OnLongClickListener{
+        void onLongClick(ChineseWord word);
+    }
+
+    public void setOnLongClickListener(OnLongClickListener listener){
+        this.listener = listener;
     }
 
     class MyViewHolder1 extends RecyclerView.ViewHolder{

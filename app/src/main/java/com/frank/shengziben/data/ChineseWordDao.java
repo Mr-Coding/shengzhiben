@@ -1,5 +1,6 @@
 package com.frank.shengziben.data;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -17,4 +18,5 @@ public interface ChineseWordDao {
 
     @Query("SELECT * FROM ChineseWord")
     List<ChineseWord> getAllChineseWord();
+//    LiveData<List<ChineseWord>> getAllChineseWord();
 }
